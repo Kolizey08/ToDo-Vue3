@@ -13,7 +13,10 @@ export const useTodoStore = defineStore('todoStore', () => {
   }
 
   function deleteTask(id: number) {
-    tasks.value = tasks.value.filter((task) => task.id !== id)
+    const index = tasks.value.findIndex(task => task.id === id);
+    if (index !== -1) {
+      tasks.value.splice(index, 1);
+    }
   }
 
   function updateStateTask(id: number) {

@@ -118,11 +118,3 @@ export default defineComponent({
   background-color: #d44042;
 }
 </style>
-
-function todoStore() {
-  throw new Error('Function not implemented.')
-}
-
-function todoStore() {
-  throw new Error('Function not implemented.')
-}

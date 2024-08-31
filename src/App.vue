@@ -1,7 +1,6 @@
 <template>
   <div class="todo-app">
     <h1>Vue3 ToDo</h1>
-
     <div class="todo-input">
       <input v-model="newTaskText" @keyup.enter="addTask" placeholder="Введите задачу..." />
       <button @click="addTask">Добавить</button>
@@ -20,11 +19,11 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { todoStore } from './stores/todoStore'
+import { useTodoStore } from './stores/todoStore'
 
 export default defineComponent({
   setup() {
-    const taskStore = todoStore()
+    const taskStore = useTodoStore()
     const newTaskText = ref('')
 
     const addTask = () => {
@@ -119,3 +118,11 @@ export default defineComponent({
   background-color: #d44042;
 }
 </style>
+
+function todoStore() {
+  throw new Error('Function not implemented.')
+}
+
+function todoStore() {
+  throw new Error('Function not implemented.')
+}

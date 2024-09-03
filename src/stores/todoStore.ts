@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-interface Tasks {
+export interface Tasks {
   title: string
   id: number
   text: string
@@ -22,7 +22,12 @@ export const useTodoStore = defineStore('todoStore', () => {
     })
   }
 
-  function updateTask(): void {}
+  function updateTask(updatedTask: Tasks): void {
+    const index = tasks.value.findIndex((task) => task.id === updatedTask.id)
+    if (index !== -1) {
+      tasks.value[index] = updatedTask
+    }
+  }
 
   function deleteTask(id: number): void {
     const index = tasks.value.findIndex((task) => task.id === id)

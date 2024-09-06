@@ -1,56 +1,7 @@
-// import { defineStore } from 'pinia'
-
-// export interface Tasks {
-//   title: string
-//   id: number
-//   text: string
-//   priority: 'низкий' | 'средний' | 'высокий'
-//   completed: boolean
-// }
-
-// export const useTodoStore = defineStore('todoStore', {
-//   state: () => ({
-//     tasks: [] as Tasks[]
-//   }),
-
-//   actions: {
-//     addTask(title: string, text: string, priority: 'низкий' | 'средний' | 'высокий'): void {
-//       this.tasks.push({
-//         title,
-//         id: Date.now(),
-//         text,
-//         priority,
-//         completed: false
-//       })
-//     },
-
-//     updateTask(updatedTask: Tasks): void {
-//       const index = this.tasks.findIndex((task) => task.id === updatedTask.id)
-//       if (index !== -1) {
-//         this.tasks[index] = updatedTask
-//       }
-//     },
-
-//     deleteTask(id: number): void {
-//       const index = this.tasks.findIndex((task) => task.id === id)
-//       if (index !== -1) {
-//         this.tasks.splice(index, 1)
-//       }
-//     },
-
-//     updateStateTask(id: number): void {
-//       const task = this.tasks.find((el) => el.id === id)
-//       if (task) {
-//         task.completed = !task.completed
-//       }
-//     }
-//   }
-// })
-
 import { defineStore } from 'pinia'
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 
-export interface Tasks {
+export interface ITasks {
   title: string
   id: number
   text: string
@@ -60,7 +11,7 @@ export interface Tasks {
 }
 
 export const useTodoStore = defineStore('todoStore', () => {
-  const tasks = ref<Tasks[]>([])
+  const tasks = ref<ITasks[]>([])
 
   const tasksLocalstorage = localStorage.getItem('tasks')
   if (tasksLocalstorage) {
@@ -77,10 +28,10 @@ export const useTodoStore = defineStore('todoStore', () => {
       completed: false,
       date: today
     })
-    
+
   }
 
-  function updateTask(updatedTask: Tasks): void {
+  function updateTask(updatedTask: ITasks): void {
     const index = tasks.value.findIndex((task) => task.id === updatedTask.id)
     if (index !== -1) {
       tasks.value[index] = updatedTask
@@ -101,9 +52,13 @@ export const useTodoStore = defineStore('todoStore', () => {
     }
   }
 
+  const completedTasks = computed(() => tasks.value.filter(task => task.completed))
+  const activeTasks = computed(() => tasks.value.filter(task => !task.completed))
+
+
   watch(() => tasks, (state) => {
     localStorage.setItem('tasks', JSON.stringify(state))
   }, {deep: true})
 
-  return { tasks, addTask, updateTask, deleteTask, updateStateTask }
+  return { tasks, addTask, updateTask, deleteTask, updateStateTask, completedTasks, activeTasks }
 })

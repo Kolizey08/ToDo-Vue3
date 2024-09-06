@@ -13,7 +13,7 @@ export default defineComponent({
   },
   setup() {
     const taskStore = useTodoStore()
-    const completedTasks = computed(() => taskStore.tasks.filter((el) => el.completed))
+    const completedTasks = computed(() => taskStore.completedTasks)
     
 
     return {

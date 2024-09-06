@@ -23,7 +23,10 @@
           <div class="todos">
             <h2 class="task-title">{{ task.title }}</h2>
             <p class="task-text">{{ task.text }}</p>
-            <span class="task-priority">{{ task.priority }}</span>
+            <hr>
+            <span class="task-priority">Приоретет: {{ task.priority }}</span>
+            <br>
+            <span class="task-date">Дата: {{ task.date }}</span>
           </div>
           <div class="button-content">
             <button @click="editTask(task)">Редактировать</button>
@@ -36,13 +39,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, PropType } from 'vue'
 import { useTodoStore, type Tasks } from '../stores/todoStore'
 
 export default defineComponent({
-  setup() {
+  props: {
+    tasks: {
+      type: Array as PropType<Tasks[]>,
+      required: true
+    }
+  },
+  setup(props) {
     const taskStore = useTodoStore()
-    const tasks = taskStore.tasks
     const editingTask = ref<Tasks | null>(null)
 
     const updateStateTask = (id: number): void => {
@@ -69,7 +77,7 @@ export default defineComponent({
     }
 
     return {
-      tasks,
+      localTasks: props.tasks,
       updateStateTask,
       deleteTask,
       editTask,
@@ -146,6 +154,12 @@ export default defineComponent({
   padding: 2px 5px;
   border-radius: 3px;
   text-transform: capitalize;
+  margin-top: 5px;
+}
+
+.task-date {
+  font-size: 12px;
+  color: #666;
   margin-top: 5px;
 }
 

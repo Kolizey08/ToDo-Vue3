@@ -1,17 +1,21 @@
 <template>
   <div class="todo-input">
-    <input
-      class="inputTitle"
-      v-model="newTaskTitle"
-      @keyup.enter="addTask"
-      placeholder="Введите заголовок..."
-    />
-    <input
-      class="inputText"
-      v-model="newTaskText"
-      @keyup.enter="addTask"
-      placeholder="Введите задачу..."
-    />
+    <div class="input-container">
+      <input
+        class="inputTitle"
+        v-model="newTaskTitle"
+        @keyup.enter="addTask"
+        placeholder="Введите заголовок..."
+      />
+      <span class="validText" v-if="errors.title">{{ errors.title }}</span>
+      <input
+        class="inputText"
+        v-model="newTaskText"
+        @keyup.enter="addTask"
+        placeholder="Введите задачу..."
+      />
+      <span class="validText" v-if="errors.text">{{ errors.text }}</span>
+    </div>
     <span>Приоритет задачи:</span>
     <div class="priority-select">
       <label>
@@ -34,15 +38,35 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useTodoStore } from '../stores/todoStore'
+
 export default defineComponent({
   setup() {
     const taskStore = useTodoStore()
     const newTaskText = ref<string>('')
     const newTaskTitle = ref<string>('')
     const taskPriority = ref<'низкий' | 'средний' | 'высокий'>('средний')
+    const errors = ref({
+      title: '',
+      text: ''
+    })
+
+    const validateInput = () => {
+      errors.value = { title: '', text: '' }
+      let isValid = true
+
+      if (!newTaskTitle.value) {
+        errors.value.title = 'Заголовок обязателен'
+        isValid = false
+      }
+      if (!newTaskText.value) {
+        errors.value.text = 'Текст задачи обязателен'
+        isValid = false
+      }
+      return isValid
+    }
 
     const addTask = (): void => {
-      if (newTaskText.value.trim() && newTaskTitle.value.trim()) {
+      if (validateInput()) {
         taskStore.addTask(newTaskTitle.value, newTaskText.value, taskPriority.value)
         newTaskText.value = ''
         newTaskTitle.value = ''
@@ -53,7 +77,8 @@ export default defineComponent({
       newTaskTitle,
       newTaskText,
       taskPriority,
-      addTask
+      addTask,
+      errors
     }
   }
 })
@@ -66,7 +91,15 @@ export default defineComponent({
   align-items: center;
   margin-bottom: 20px;
 }
-
+.input-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 130px;
+  justify-content: space-around;
+  margin-bottom: 12px;
+}
 .inputTitle {
   font-size: 17px;
 }
@@ -80,6 +113,11 @@ export default defineComponent({
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
+}
+
+.validText {
+  color: red;
+  font-size: 12px;
   margin-bottom: 12px;
 }
 

@@ -55,7 +55,8 @@ export interface Tasks {
   id: number
   text: string
   priority: 'низкий' | 'средний' | 'высокий'
-  completed: boolean
+  completed: boolean,
+  date: string
 }
 
 export const useTodoStore = defineStore('todoStore', () => {
@@ -64,17 +65,19 @@ export const useTodoStore = defineStore('todoStore', () => {
   const tasksLocalstorage = localStorage.getItem('tasks')
   if (tasksLocalstorage) {
     tasks.value = JSON.parse(tasksLocalstorage)._value
-    console.log(JSON.parse(tasksLocalstorage))
   }
 
   function addTask(title: string, text: string, priority: 'низкий' | 'средний' | 'высокий'): void {
+    const today = new Date().toLocaleDateString()
     tasks.value.push({
       title,
       id: Date.now(),
       text,
       priority,
-      completed: false
+      completed: false,
+      date: today
     })
+    
   }
 
   function updateTask(updatedTask: Tasks): void {
